@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
 
 // Widget que representa o formulário de transações
-class TransactionForm extends StatelessWidget {
-  final titleController = TextEditingController(); // Controla o campo título
-  final valueController = TextEditingController(); // Controla o campo valor
-
+class TransactionForm extends StatefulWidget {
   final void Function(String, double) onSubmit;
 
   TransactionForm(this.onSubmit);
+
+  @override
+  State<TransactionForm> createState() => _TransactionFormState();
+}
+
+class _TransactionFormState extends State<TransactionForm> {
+  final titleController = TextEditingController(); 
+  final valueController = TextEditingController(); 
+  
+  _submitForm() {
+    final title = titleController.text;
+    final value = double.tryParse(valueController.text) ?? 0.0;
+    if (title.isEmpty || value <= 0) {
+      return;
+    }
+
+    widget.onSubmit(title, value); // Chama função recebida por parâmetro
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +40,8 @@ class TransactionForm extends StatelessWidget {
             // Campo para digitar valor
             TextField(
               controller: valueController,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              onSubmitted: (value) => _submitForm(),
               decoration: InputDecoration(labelText: 'Valor (R\$)'),
             ),
             // Botão para enviar a nova transação
@@ -34,11 +51,7 @@ class TransactionForm extends StatelessWidget {
                 TextButton(
                   child: Text('Nova Transação'),
                   style: TextButton.styleFrom(foregroundColor: Colors.purple),
-                  onPressed: () {
-                    final title = titleController.text;
-                    final value = double.tryParse(valueController.text) ?? 0.0;
-                    onSubmit(title, value); // Chama função recebida por parâmetro
-                  },
+                  onPressed: _submitForm, 
                 ),
               ],
             ),
