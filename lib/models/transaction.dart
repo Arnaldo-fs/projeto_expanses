@@ -1,14 +1,13 @@
-// Modelo de dados que representa uma transação
 class Transaction {
-  final String id; // Identificador único
-  final String title; // Título ou descrição da transação
-  final double value; // Valor da transação
-  final DateTime date; // Data da transação
+  final String id;
+  final String title;
+  final double value;
+  final DateTime date;
 
   Transaction({
-    required this.date,
-    required this.title,
     required this.id,
+    required this.title,
     required this.value,
+    required this.date,
   });
 }
