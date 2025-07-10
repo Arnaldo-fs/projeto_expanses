@@ -42,49 +42,51 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
+    return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            TextField(
-              controller: _titleController,
-              onSubmitted: (_) => _submitForm(),
-              decoration: const InputDecoration(labelText: 'Título'),
-            ),
-            TextField(
-              controller: _valueController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              onSubmitted: (_) => _submitForm(),
-              decoration: const InputDecoration(labelText: 'Valor (R\$)'),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    _selectedDate == null
-                        ? 'Nenhuma data selecionada!'
-                        : 'Data selecionada: ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
-                  ),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 40,
+        ),
+        child: Card(
+          elevation: 5,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: _titleController,
+                  onSubmitted: (_) => _submitForm(),
+                  decoration: const InputDecoration(labelText: 'Título'),
                 ),
-                TextButton(
-                  onPressed: _showDatePicker,
-                  style: TextButton.styleFrom(
-                    foregroundColor: Theme.of(context).primaryColor,
-                  ),
-                  child: const Text(
-                    'Selecionar Data',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                TextField(
+                  controller: _valueController,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  onSubmitted: (_) => _submitForm(),
+                  decoration: const InputDecoration(labelText: 'Valor (R\$)'),
                 ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
+                const SizedBox(height: 10),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        'Data selecionada: ${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: _showDatePicker,
+                      style: TextButton.styleFrom(
+                        foregroundColor: Theme.of(context).primaryColor,
+                      ),
+                      child: const Text(
+                        'Selecionar Data',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.purple,
@@ -95,7 +97,7 @@ class _TransactionFormState extends State<TransactionForm> {
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

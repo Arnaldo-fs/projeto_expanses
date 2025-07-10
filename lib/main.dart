@@ -50,9 +50,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transaction> _transactions = [
-    
-  ];
+  final List<Transaction> _transactions = [];
+  bool _showChart = false;
 
   List<Transaction> get _recentTransactions {
     return _transactions.where((tr) {
@@ -80,8 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
   _removeTransaction(String id) {
     setState(() {
       _transactions.removeWhere((tr) => tr.id == id);
-      });
-    }
+    });
+  }
 
   _openTransactionFormModal(BuildContext context) {
     showModalBottomSheet(
@@ -94,34 +93,63 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
     final appBar = AppBar(
-        title: const Text(
-          'Despesas Pessoais'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add, size: 32, color: Color.fromARGB(255, 255, 255, 255)),
-            onPressed: () => _openTransactionFormModal(context),
-          ),
-        ],
-      );
+      title: const Text('Despesas Pessoais'),
+      actions: [
+        if(isLandscape) 
+        IconButton(
+          icon: Icon(_showChart ? Icons.list : Icons.show_chart,
+              size: 32, color: Color.fromARGB(255, 255, 255, 255)),
+          onPressed: () {
+            setState(() {
+              _showChart = !_showChart;
+            });
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.add,
+              size: 32, color: Color.fromARGB(255, 255, 255, 255)),
+          onPressed: () => _openTransactionFormModal(context),
+        ),
+      ],
+    );
 
-    final availablelHeight = MediaQuery.of(context).size.height - 
-    appBar.preferredSize.height - 
-    MediaQuery.of(context).padding.top;
+    final availablelHeight = mediaQuery.size.height -
+        appBar.preferredSize.height -
+        mediaQuery.padding.top;
 
     return Scaffold(
       appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+          children: <Widget>[
+            // if (isLandscape)
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: <Widget>[
+            //     Text('Exibir Gráfico'),
+            //     Switch(
+            //       value: _showChart,
+            //       onChanged: (value) {
+            //         setState(() {
+            //           _showChart = value;
+            //         });
+            //       },
+            //     ),
+            //   ],
+            // ),
+            if (_showChart || !isLandscape)
             Container(
-              height: availablelHeight * 0.30,
-              child: Chart(_recentTransactions)
-            ),
+                height: availablelHeight * (isLandscape ? 0.70 : 0.3),
+                child: Chart(_recentTransactions),
+                ),
+            if (!_showChart || !isLandscape)
             Container(
-              height: availablelHeight * 0.70,
+              height: availablelHeight * (isLandscape ? 1 : 0.7),
               child: TransactionList(_transactions, _removeTransaction),
             ),
           ],
@@ -129,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.purple, // cor de fundo do botão
-        foregroundColor: Colors.white,  // cor do ícone
+        foregroundColor: Colors.white, // cor do ícone
         child: const Icon(Icons.add),
         onPressed: () => _openTransactionFormModal(context),
       ),
